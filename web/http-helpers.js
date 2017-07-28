@@ -14,8 +14,47 @@ exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
+
+  //console.log('Asset', asset);
+  //every response will have an end
+  fs.readFile(archive.paths.siteAssets + asset, 'utf8', function(err, data) {
+
+    if (err) {
+      fs.readFile(archive.paths.archivedSites + asset, 'utf8', function(err, data) {
+        //console.log('ARCHIVE + GOOGLE', archive.paths.archivedSites + asset );
+
+        if (err) {
+          if (callback) {
+            console.log('callback running');
+            callback();
+          } else {
+            console.log('this is not archived');
+            res.writeHead(404);
+            res.end('404');
+          }
+        } else {
+          console.log('data2', data);
+          console.log('npm test here!!!!!!!!!!!!');
+          res.writeHead(200);
+          res.end(data);
+        }
+      });
+    } else {
+      console.log('data1', data);
+      res.writeHead(200);
+      res.end(data); //
+    }
+
+  });
 };
-
-
-
 // As you progress, keep thinking about what helper functions you can put here!
+
+//function: collectData
+//data = ''
+//request.on('data', chunk)
+ //keep adding chunks
+//request.on(end)
+ //push it in the messages array
+
+ //If you get a POST request
+  // add the site user wanted in the file that we are talking about (if that site is not present in that file)
