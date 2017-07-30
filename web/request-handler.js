@@ -10,7 +10,6 @@ var actions = {
   'GET': function(request, response) {
     var parts = url.parse(request.url);
     var urlPath = parts.pathname === '/' ? '/index.html' : parts.pathname;
-    //console.log('Just to check argle bargle', urlPath);
     httpHelpers.serveAssets(response, urlPath, function() {
       response.writeHead(404, httpHelpers.headers);
       response.end('404 website not found');
@@ -22,18 +21,32 @@ var actions = {
       console.log('pre-split url', url);
       var url = url.split('=')[1];//.replace('http://', '');
       console.log('assembled data', url);
-      archive.addUrlToList(url, function() {
-        httpHelpers.redirect(response, '/loading.html');
+
+      //check if url is in site.txt
+      archive.isUrlInList(url, function(found) {
+        if (found) {
+          //if yes check if it is archivedSites
+          archive.isUrlArchived(url, function(exists) {
+            //if yes, redirect to page
+            if (exists) {
+              httpHelpers.redirect(response, '/' + url);
+            } else {
+              //if no, redirect to loading
+              httpHelpers.redirect(response, '/loading.html');
+            }
+          });
+        } else {
+          //if no add to site.txt
+          archive.addUrlToList(url, function() {
+            httpHelpers.redirect(response, '/loading.html');
+          });
+        }
       });
 
-      
-      //check if url is in site.txt
-        //if yes check if it is archivedSites
-          //if yes, display page
-          //if no, display loading
-        //if no add to site.txt
+
+
+
     });
-    //console.log('post response', response);
   }
 };
 

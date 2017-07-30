@@ -57,7 +57,6 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-  //console.log('isUrlArchived? url', url);
   fs.readdir(exports.paths.archivedSites, function(err, files) {
     callback(files.indexOf(url) !== -1);
   });
