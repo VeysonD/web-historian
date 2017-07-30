@@ -17,7 +17,23 @@ var actions = {
     });
   },
   'POST': function(request, response) {
+    //console.log('post request', request);
+    httpHelpers.assembleData(request, function(url) {
+      console.log('pre-split url', url);
+      var url = url.split('=')[1];//.replace('http://', '');
+      console.log('assembled data', url);
+      archive.addUrlToList(url, function() {
+        httpHelpers.redirect(response, '/loading.html');
+      });
 
+      
+      //check if url is in site.txt
+        //if yes check if it is archivedSites
+          //if yes, display page
+          //if no, display loading
+        //if no add to site.txt
+    });
+    //console.log('post response', response);
   }
 };
 
